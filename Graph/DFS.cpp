@@ -56,14 +56,18 @@ int main()
 
     cout<<"DFS "<<endl;
 
+    int disconnected_component = 0;
+
     for(auto &i:adjList){
         int node = i.first;
         if(!visited[node]){
+            disconnected_component++;
             g.DFS(node,adjList,visited);
             cout<<endl;
         }
     }
 
+    cout<<"disconnected_component: "<<disconnected_component<<endl;
     
  return 0;
 }
