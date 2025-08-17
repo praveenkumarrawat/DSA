@@ -4,7 +4,7 @@ class Graph{
     public:
     // unordered_map<int,list<int>>adjList;
 
-    void addEdge(int u, int v, bool direction, unordered_map<int,list<int>>&adjList){
+    void addEdge(int u, int v, bool direction, map<int,list<int>>&adjList){
         if(direction){
             adjList[u].push_back(v);
         }else{
@@ -13,7 +13,7 @@ class Graph{
         }
     }
 
-    void print(unordered_map<int,list<int>>&adjList){
+    void print(map<int,list<int>>&adjList){
         for(auto i: adjList){
             cout<<i.first<<" : ";
             for(auto nbr: i.second){
@@ -23,7 +23,7 @@ class Graph{
         }
     }
 
-    void BFS(int src, unordered_map<int,list<int>>adjList, unordered_map<int,bool>&visited){
+    void BFS(int src, map<int,list<int>>&adjList, unordered_map<int,bool>&visited){
         queue<int>q;
         q.push(src);
         visited[src]=true;
@@ -44,7 +44,7 @@ class Graph{
 };
 int main()
 {
-    unordered_map<int,list<int>>adjList;
+    map<int,list<int>>adjList;
     unordered_map<int,bool>visited;
     Graph g;
     g.addEdge(1,2,true,adjList);
@@ -55,9 +55,22 @@ int main()
     g.addEdge(4,7,true,adjList);
     g.addEdge(5,7,true,adjList);
 
+    g.addEdge(8,9,true,adjList);
+    g.addEdge(9,10,true,adjList);
+
+    g.addEdge(11,11,true,adjList);
+
     g.print(adjList);
 
-    g.BFS(1,adjList,visited);
+    cout<<"BFS "<<endl;
+
+    for(auto &i:adjList){
+        int node = i.first;
+        if(!visited[node]){
+            g.BFS(node,adjList,visited);
+            cout<<endl;
+        }
+    }
 
     
  return 0;
