@@ -3,48 +3,51 @@
 class Solution {
   public:
     
-    void addEdge(int u, int v, bool direction, map<int,list<int>>&adjList){
-        if(direction){
-            adjList[u].push_back(v);
-        }else{
-            adjList[u].push_back(v);
-            adjList[v].push_back(u);
-        }
+    void addEdge(int u, int v, map<int,list<int>>&adjList){
+        adjList[u].push_back(v);
     }
-  
-    bool cycleUsingDFS(int src,int srcParent, map<int,list<int>>&adjList, unordered_map<int,bool>&visited){
-
-        // parent[src]=srcParent;
-        visited[src]=true;
-        for(int node: adjList[src]){
-            if(!visited[node]){
-                if(cycleUsingDFS(node,src,adjList,visited)) return true;
+    
+    bool checkCycleDFS(int src, map<int,list<int>>&adjList,
+        unordered_map<int,bool>&visited,unordered_map<int,bool>&trackDFS){
+            trackDFS[src]=true;
+            visited[src]=true;
+            
+            for(int node:adjList[src]){
+                if(!visited[node]){
+                    bool ans = checkCycleDFS(node,adjList,visited,trackDFS);
+                    if(ans) return true;
+                }
+                else if(visited[node] && trackDFS[node]){
+                    // cycle present 
+                    return true;
+                }
             }
-            else if(visited[node] && srcParent!=node){
-                // cycle present
-                return true;
-            }
+            
+            // backtrack - important
+            trackDFS[src]=false;
+            return false;
         }
-        return false;
+    
+    bool isCyclic(int V, vector<vector<int>> &edges) {
         
-    }
-    bool isCycle(int V, vector<vector<int>>& edges) {
-        // Code here
-        unordered_map<int,bool>visited;
         map<int,list<int>>adjList;
-        // unordered_map<int,int>parent;
         for(int i=0;i<edges.size();i++){
-            int u=edges[i][0];
-            int v=edges[i][1];
-            addEdge(u,v,false,adjList);
+            int u = edges[i][0];
+            int v = edges[i][1];
+            addEdge(u,v,adjList);
         }
         
-        for(auto &it : adjList){
-            if(!visited[it.first]){
-                if(cycleUsingDFS(it.first,-1,adjList,visited)) return true;
+        unordered_map<int,bool>visited;
+        unordered_map<int,bool>trackDFS;
+        
+        for(auto it:adjList){
+            int src = it.first;
+            if(!visited[src]){
+                if(checkCycleDFS(src,adjList,visited,trackDFS)) return true;
             }
         }
         
         return false;
+        
     }
 };
